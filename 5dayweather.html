@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta description="React.js basic example.">
+    <meta author="jdjak@mail.com">
+    <title>ReactJS Demo</title>
+    <!-- React.js -->
+    <script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+    <!-- Babel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+    <!-- JQuery -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <!-- Custom CSS -->
+ <style type="text/css">
+        td,th {
+            text-align: center;
+              }
+        .jumbotron {
+            background-color: #563D7C;
+            color: white;
+            font-style: italic;
+            font-family: "Times New Roman", Times, serif;
+            text-align: center;
+              }
+        #bg,#icon {
+            text-align: center; 
+              }
+</style>
+ </head>
+
+<body>
+    <!-- Page content -->
+    <!-- Intro -->
+    <section id="intro">
+        <div class="jumbotron">
+            <h1>5 day weather forecast </h1>
+            Ova stranica koristi OpenWeatherMap
+             <!--  <p id =icon></p>   -->
+            
+
+        </div>
+    </section>   
+ <!-- Users overview -->
+    <section>
+        <div class="container-fluid">
+            <div class="row">
+                <h2  id ="bg" class="col-lg-12"></h2>
+                <p id =icon class="col-lg-12"> </p>
+                <h5 id="opis" class="col-lg-12"></h5>
+
+                <div id="root" class="col-lg-12"></div>
+            </div>
+        </div>
+    </section>
+     <script type="text/babel">
+ 
+        $.ajax({
+            'url': 'http://api.openweathermap.org/data/2.5/forecast?id=792680&units=metric&APPID=d3e6024cf3bb85380b0b337f71e869c8',
+            'success': function(response){
+                console.log(response);
+                console.log(response.list);
+                const root = document.getElementById('root');
+
+                let main =response.city.name;
+                main=$('bg').html();
+                let icon =response.city.country;
+                icon=$('icon').html();
+
+
+
+                
+                let rows = [];
+                for(var user of response.list){
+                    const row = 
+                        <tr>
+                            <td>{user.dt_txt}</td>
+                            <td>{user.weather[0].description}</td>
+                            <td>{user.main.temp} °C</td>
+                            <td>{user.main.humidity} %</td>
+                            <td>{user.main.pressure} hPa</td>
+                            <td>{user.wind.speed} meter/sec</td>
+                        </tr>;
+                    rows.push(row);
+                }
+                const table = 
+                    <table className="table">
+                        <thead className="thead-dark">
+                            <th>Date&time</th>
+                            <th>Description</th>
+                            <th>Temperature</th>
+                            <th>Humidity</th>
+                            <th>Pressure</th>
+                            <th>Wind speed</th>
+                        </thead>
+                        <tbody>
+                            {rows}
+                        </tbody>
+                   </table>
+               ReactDOM.render(table, root);
+              },
+         });     
+
+  </script>
+  </body>
+
+</html>
