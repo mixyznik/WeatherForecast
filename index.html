@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <!-- meta tags -->
+    <title>MM</title>
+    <!-- JQuery -->
+      <!-- meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,97 +23,121 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <!-- Custom CSS -->
- <style type="text/css">
+    <style type="text/css">
         td,th {
             text-align: center;
-              }
-        .jumbotron {
+            font-family: "Times New Roman", Times, serif;
+            font-size: 20px;
+             }
+             .jumbotron {
             background-color: #563D7C;
             color: white;
             font-style: italic;
             font-family: "Times New Roman", Times, serif;
-            text-align: center;
-              }
-        #bg,#icon {
-            text-align: center; 
-              }
-</style>
- </head>
+             #root {
+              font-family: "Times New Roman", Times, serif;   
+             }
+     
+     </style>        
+</head>
 
 <body>
-    <!-- Page content -->
-    <!-- Intro -->
-    <section id="intro">
+      <section id="intro">
         <div class="jumbotron">
-            <h1>5 day weather forecast </h1>
-            Ova stranica koristi OpenWeatherMap
-             <!--  <p id =icon></p>   -->
-            
+            <h1>Current Conditions </h1>
+            <p>Ova stranica koristi OpenWeatherMap</p>
+         
+             
 
         </div>
-    </section>   
- <!-- Users overview -->
-    <section>
-        <div class="container-fluid">
-            <div class="row">
-                <h2  id ="bg" class="col-lg-12"></h2>
-                <p id =icon class="col-lg-12"> </p>
-                <h5 id="opis" class="col-lg-12"></h5>
-
-                <div id="root" class="col-lg-12"></div>
-            </div>
+        </section> 
+  
+ <section>
+        <div class="container-fluid" >
+            <div class="table" >
+ 
+            
+                <h2  id ="bg" ></h2>
+               
+                <div id="root" ></div>
+   
+       </div>
         </div>
     </section>
-     <script type="text/babel">
- 
-        $.ajax({
-            'url': 'http://api.openweathermap.org/data/2.5/forecast?id=792680&units=metric&APPID=d3e6024cf3bb85380b0b337f71e869c8',
-            'success': function(response){
-                console.log(response);
-                console.log(response.list);
-                const root = document.getElementById('root');
 
-                let main =response.city.name;
-                main=$('bg').html();
-                let icon =response.city.country;
-                icon=$('icon').html();
+    <script type="text/javascript">
+    $(document).ready(function() {
+        $.ajax({
+            
+              type: "GET",
+               data: {
+                id: "792680",
+                units: "metric",
+                APPID: "d3e6024cf3bb85380b0b337f71e869c8",
+                format: "jsonp",
+                callback: "jsonp_callback",
+            },
+
+            'url': "http://api.openweathermap.org/data/2.5/weather",
+                dataType: "jsonp",
+                jsonpCallback: 'jsonp_callback',
+                contentType: 'application/json',
+
+            success: function(response) {
+                console.log(response);
+                console.log(response.name);
+                
+                let main =response.name;
+                
+               document.getElementById('bg').innerHTML=main;
+
+               let weath=response.weather[0].description;
+               console.log(response.weather[0].description);
+               let temp=response.main.temp;
+               let humid=response.main.humidity;
+               let press=response.main.pressure;
+               let wind=response.wind.speed;
+            const table = 
+                    '<table className="table">'+
+                        '<thead className="thead-dark">'+
+                            
+                            '<th>Weather description</th>' +
+                            '<th>Temperature</th>' +
+                            '<th>Humidity</th>'+
+                            '<th>Pressure</th>'+
+                            '<th>Wind speed</th>'+
+                            
+                       '</thead class="thead-dark">'+
+                        '<tbody>'+
+                           '<tr>'+
+                            '<td>'+ weath  +'</td>'+
+                            '<td>'+ temp +" "+"°C"  +'</td>'+
+                            '<td>'+ humid+" "+ "%" +'</td>'+
+                            '<td>'+ press+" " +"hPa" +'</td>'+
+                            '<td>'+ wind+ " "+"m/sec" +'</td>'+
+                            '</tr>'+
+                    
+                        '</tbody>'+
+                   '</table>';
+
+                   document.getElementById('root').innerHTML=table;
+
+
+
+
 
 
 
                 
-                let rows = [];
-                for(var user of response.list){
-                    const row = 
-                        <tr>
-                            <td>{user.dt_txt}</td>
-                            <td>{user.weather[0].description}</td>
-                            <td>{user.main.temp} °C</td>
-                            <td>{user.main.humidity} %</td>
-                            <td>{user.main.pressure} hPa</td>
-                            <td>{user.wind.speed} meter/sec</td>
-                        </tr>;
-                    rows.push(row);
-                }
-                const table = 
-                    <table className="table">
-                        <thead className="thead-dark">
-                            <th>Date&time</th>
-                            <th>Description</th>
-                            <th>Temperature</th>
-                            <th>Humidity</th>
-                            <th>Pressure</th>
-                            <th>Wind speed</th>
-                        </thead>
-                        <tbody>
-                            {rows}
-                        </tbody>
-                   </table>
-               ReactDOM.render(table, root);
-              },
-         });     
-
-  </script>
-  </body>
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log(jqXHR);
+                console.log(textStatus);
+                console.log(errorThrown);
+            }
+        });
+    });
+    </script>
+</body>
 
 </html>
